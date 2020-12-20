@@ -1,6 +1,8 @@
 package com.insta.mycalendar
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -14,18 +16,19 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import java.util.*
 
 class SimpleCalendar : LinearLayout {
     private var selectedDayButton: Button? = null
     private lateinit var days: Array<Button?>
-    var weekOneLayout: LinearLayout? = null
-    var weekTwoLayout: LinearLayout? = null
-    var weekThreeLayout: LinearLayout? = null
-    var weekFourLayout: LinearLayout? = null
-    var weekFiveLayout: LinearLayout? = null
-    var weekSixLayout: LinearLayout? = null
+    private var weekOneLayout: LinearLayout? = null
+    private var weekTwoLayout: LinearLayout? = null
+    private var weekThreeLayout: LinearLayout? = null
+    private var weekFourLayout: LinearLayout? = null
+    private var weekFiveLayout: LinearLayout? = null
+    private var weekSixLayout: LinearLayout? = null
     private lateinit var weeks: Array<LinearLayout?>
     private var currentDateDay = 0
     private var chosenDateDay = 0
@@ -136,7 +139,7 @@ class SimpleCalendar : LinearLayout {
             indexOfDayAfterLastDayOfMonth = daysLeftInFirstWeek + daysInCurrentMonth
             for (i in firstDayOfCurrentMonth until firstDayOfCurrentMonth + daysInCurrentMonth) {
                 if (currentDateMonth == chosenDateMonth && currentDateYear == chosenDateYear && dayNumber == currentDateDay) {
-                    days[i]?.setBackgroundColor(resources.getColor(R.color.pink))
+                    days[i]?.setBackgroundColor(resources.getColor(R.color.pink)) // backraund
                     days[i]?.setTextColor(Color.WHITE)
                 } else {
                     days[i]?.setTextColor(Color.BLACK)
@@ -234,22 +237,42 @@ class SimpleCalendar : LinearLayout {
             } else {
                 selectedDayButton!!.setBackgroundColor(Color.TRANSPARENT)
                 if (selectedDayButton?.currentTextColor !== Color.RED) {
-                    selectedDayButton!!.setTextColor(
-                        resources
-                            .getColor(R.color.calendar_number)
-                    )
+                    selectedDayButton!!.setTextColor(resources.getColor(R.color.calendar_number))
                 }
             }
         }
         selectedDayButton = view as Button?
         if (selectedDayButton?.tag != null) {
-            val dateArray = selectedDayButton?.getTag() as IntArray
+            val dateArray = selectedDayButton?.tag as IntArray
             pickedDateDay = dateArray[0]
             pickedDateMonth = dateArray[1]
             pickedDateYear = dateArray[2]
         }
         if (pickedDateYear == currentDateYear && pickedDateMonth == currentDateMonth && pickedDateDay == currentDateDay) {
-            selectedDayButton?.setBackgroundColor(resources.getColor(R.color.pink))
+            selectedDayButton?.setBackgroundColor(resources.getColor(R.color.pink)) // Click
+
+
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Title")
+            builder.setMessage("Show")
+            builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+            builder.setPositiveButton("Yes"){dialogInterface, which ->
+                Toast.makeText(context,"clicked yes",Toast.LENGTH_LONG).show()
+            }
+            builder.setNeutralButton("Cancel"){dialogInterface , which ->
+                Toast.makeText(context,"clicked cancel\n operation cancel",Toast.LENGTH_LONG).show()
+            }
+            builder.setNegativeButton("No"){dialogInterface, which ->
+                Toast.makeText(context,"clicked No",Toast.LENGTH_LONG).show()
+            }
+            val alertDialog: AlertDialog = builder.create()
+
+            alertDialog.setCancelable(false)
+            alertDialog.show()
+
+
+
             selectedDayButton?.setTextColor(Color.WHITE)
         } else {
             selectedDayButton?.setBackgroundColor(resources.getColor(R.color.grey))
